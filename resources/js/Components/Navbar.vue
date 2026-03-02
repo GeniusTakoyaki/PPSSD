@@ -39,7 +39,7 @@ const closeAll = () => {
           <a href="https://ppssd.buplant.da.gov.ph/" class="text-gray-100 hover:text-indigo-400">Home</a>
         </li>
         <li>
-          <Link href="/search" class="text-gray-100 hover:text-indigo-400">Search</Link>
+          <Link href="/" class="text-gray-100 hover:text-indigo-400">Search</Link>
         </li>
         <li class="relative">
           <button @click="toggleDropdown" class="text-gray-100 hover:text-indigo-400 focus:outline-none">List</button>

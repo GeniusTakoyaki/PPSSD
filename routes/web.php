@@ -29,4 +29,12 @@ Route::get('/', function () {
     return Inertia::render('Mainpage');
 });
 
+Route::get('/pesticides', function () {
+    return Inertia::render('PesticidesView');
+});
+
+Route::get('/commodities', function () {
+    return Inertia::render('CommoditiesView');
+});
+
 require __DIR__.'/auth.php';

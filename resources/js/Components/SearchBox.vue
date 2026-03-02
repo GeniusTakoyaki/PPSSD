@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { router } from '@inertiajs/vue3'
 
 
 // reactive variables
@@ -43,19 +44,25 @@ const handleSearch = () => {
           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
         />
 
-        <input 
+        <select
           v-model="searchCategory"
-          type="text" 
-          placeholder="Category"
           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
-        />
+        >
+          <option disabled value="">Select Category</option>
+          <option value="pesticides">Pesticides</option>
+          <option value="commodities">Commodities</option>
+        </select>
 
-        <input 
+
+        <select
           v-model="searchType"
-          type="text" 
-          placeholder="Type"
           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
-        />
+        >
+          <option disabled value="">Select Type</option>
+          <option value="pesticides">Group</option>
+          <option value="commodities">Item</option>
+        </select>
+        
 
         <button 
           type="submit"
