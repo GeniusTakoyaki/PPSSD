@@ -26,7 +26,7 @@ const handleSearch = () => {
     <div class="w-full max-w-5xl text-center">
       
       <h1 class="text-4xl font-bold text-white mb-4">
-        PPSSD Database Search
+        Pesticide MRL Database Search
       </h1>
 
       <p class="text-green-100 mb-10">

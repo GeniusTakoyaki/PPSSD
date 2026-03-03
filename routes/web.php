@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\CommodityController;
 
 Route::get('/about', function () {
     return Inertia::render('Welcome', [
@@ -36,5 +37,9 @@ Route::get('/pesticides', function () {
 Route::get('/commodities', function () {
     return Inertia::render('CommoditiesView');
 });
+
+
+Route::get('/commodities', [CommodityController::class, 'index'])
+    ->name('commodities.index');
 
 require __DIR__.'/auth.php';

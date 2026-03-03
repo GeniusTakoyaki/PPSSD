@@ -15,6 +15,8 @@ const closeAll = () => {
   showMenu.value = false
   showDropdown.value = false
 }
+
+const notMainPage = true
 </script>
 
 <template>
@@ -38,7 +40,7 @@ const closeAll = () => {
         <li>
           <a href="https://ppssd.buplant.da.gov.ph/" class="text-gray-100 hover:text-indigo-400">Home</a>
         </li>
-        <li>
+        <li v-if="page.url !== '/'">
           <Link href="/" class="text-gray-100 hover:text-indigo-400">Search</Link>
         </li>
         <li class="relative">
