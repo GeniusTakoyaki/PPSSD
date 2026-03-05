@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CommodityController;
+use App\Http\Controllers\PesticideController;
 
 Route::get('/about', function () {
     return Inertia::render('Welcome', [
@@ -30,16 +31,16 @@ Route::get('/', function () {
     return Inertia::render('Mainpage');
 });
 
-Route::get('/pesticides', function () {
-    return Inertia::render('PesticidesView');
-});
-
-Route::get('/commodities', function () {
-    return Inertia::render('CommoditiesView');
-});
-
 
 Route::get('/commodities', [CommodityController::class, 'index'])
     ->name('commodities.index');
+
+Route::get('/pesticides', [PesticideController::class, 'index'])
+    ->name('pesticides.index');
+
+
+Route::get('/list', function () {
+    return Inertia::render('TablePage');
+});
 
 require __DIR__.'/auth.php';

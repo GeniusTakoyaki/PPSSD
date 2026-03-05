@@ -1,5 +1,5 @@
 <template>
-  <Head title="Search"></Head>
+  <Head title="List"></Head>
   <div>
     <!-- Navbar -->
     <Navbar />
@@ -13,5 +13,5 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
-import SearchBox from '@/Components/SearchBox.vue'
+import SearchBox from '@/Components/DataTable.vue'
 </script>

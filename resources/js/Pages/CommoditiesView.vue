@@ -1,4 +1,5 @@
 <template>
+  <Head title="Commodities"></Head>
   <Navbar />
   <div class="container mx-auto px-6 py-8">
     <h1 class="text-3xl font-bold text-green-800 mb-6">Commodities</h1>
@@ -39,13 +40,17 @@
       </div>
     </div>
 
-    <AZList :items="commodities" />
+    <AZList
+      :items="commodities"
+      field="Commodity"
+      idField="Commodity ID"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { router, Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AZList from '@/Components/AZList.vue'
 
