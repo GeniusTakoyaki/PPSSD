@@ -4,14 +4,24 @@
     <!-- Navbar -->
     <Navbar />
 
-    <!-- Front Page Body -->
-    <SearchBox />
-
+    <DataTable
+        :results="results"
+        :category="category"
+        :name="name"
+      />
   </div>
 </template>
 
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
-import SearchBox from '@/Components/DataTable.vue'
+import DataTable from '@/Components/DataTable.vue'
+
+const props = defineProps({
+  name:   String,
+  category:    String,
+  results: { type: Array, default: () => [] }
+})
+
+console.log(props.name);
 </script>

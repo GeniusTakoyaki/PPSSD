@@ -8,15 +8,10 @@ const searchName = ref('')
 const searchCategory = ref('')
 const searchType = ref('') // make sure template uses this exact name
 
-// handle search
 const handleSearch = () => {
-  router.push({
-    path: '/search',
-    query: {
-      name: searchName.value,
-      category: searchCategory.value,
-      type: searchType.value
-    }
+  router.get('/search', {
+    search: searchName.value,
+    category: searchCategory.value
   })
 }
 </script>
@@ -41,16 +36,18 @@ const handleSearch = () => {
           v-model="searchName"
           type="text" 
           placeholder="Name"
+          required
           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
         />
 
         <select
           v-model="searchCategory"
+          required
           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
         >
           <option disabled value="">Select Category</option>
-          <option value="pesticides">Pesticides</option>
-          <option value="commodities">Commodities</option>
+          <option value="Pesticides">Pesticide</option>
+          <option value="Commodities">Commodity</option>
         </select>
 
 

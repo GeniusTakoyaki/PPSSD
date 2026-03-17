@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CommodityController;
 use App\Http\Controllers\PesticideController;
+use App\Http\Controllers\MRLController;
+use Illuminate\Http\Request;
 
 Route::get('/about', function () {
     return Inertia::render('Welcome', [
@@ -39,8 +41,6 @@ Route::get('/pesticides', [PesticideController::class, 'index'])
     ->name('pesticides.index');
 
 
-Route::get('/list', function () {
-    return Inertia::render('TablePage');
-});
+Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
 
 require __DIR__.'/auth.php';

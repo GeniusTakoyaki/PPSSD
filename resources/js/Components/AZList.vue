@@ -16,7 +16,7 @@
         <div
           v-for="item in items"
           :key="item[idField]"
-          @click="$emit('select', item)"
+          @click="handleSearch(item)"
           class="group p-5 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
         >
           <div class="flex items-center justify-between">
@@ -45,6 +45,9 @@
 
 <script setup>
 import { computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+
+  var cat = '';
 
 const props = defineProps({
   items: {
@@ -61,6 +64,25 @@ const props = defineProps({
   }
 })
 
+
+  if (props.field == 'Commodity'){
+    cat = 'Commodities'
+  } else {
+    cat = 'Pesticides'
+  }
+
+const handleSearch = (item) => {
+  router.get('/search', {
+    search: item[props.field],
+    category: cat,
+    type: "test"
+  }, {
+    preserveState: true,
+    preserveScroll: true,
+    replace: true
+  })
+}
+
 const grouped = computed(() => {
   const groups = {}
   props.items.forEach(item => {
@@ -75,6 +97,8 @@ const grouped = computed(() => {
   Object.keys(groups).forEach(k => {
     groups[k].sort((a, b) => a[props.field].localeCompare(b[props.field]))
   })
+
+ 
 
   return groups
 })
