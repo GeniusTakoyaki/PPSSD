@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\CommodityController;
 use App\Http\Controllers\PesticideController;
 use App\Http\Controllers\MRLController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 
 Route::get('/about', function () {
@@ -42,5 +43,7 @@ Route::get('/pesticides', [PesticideController::class, 'index'])
 
 
 Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
+
+Route::get('/filter', [DashboardController::class, 'index'])->name('filter.index');
 
 require __DIR__.'/auth.php';
