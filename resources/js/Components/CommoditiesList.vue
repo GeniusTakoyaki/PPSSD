@@ -21,7 +21,7 @@
         </div>
 
         <!-- Add Button -->
-        <button class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800">
+        <button @click="emit('open-form', { type: 'commodities' })" class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800">
           + Add
         </button>
       </div>
@@ -84,11 +84,15 @@ console.log(props['commodities']);
 
 watch([search], () => {
   router.get(
-    route('filter.index'),
+    route('dashboard'),
     {
       search: search.value || null,
     },
     { preserveState: true, replace: true }
   )
 }, { debounce: 300 })
+
+
+const emit = defineEmits(['open-form'])
+
 </script>

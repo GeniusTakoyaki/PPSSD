@@ -19,9 +19,9 @@ Route::get('/about', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -43,7 +43,5 @@ Route::get('/pesticides', [PesticideController::class, 'index'])
 
 
 Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
-
-Route::get('/filter', [DashboardController::class, 'index'])->name('filter.index');
 
 require __DIR__.'/auth.php';

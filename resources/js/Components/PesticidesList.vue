@@ -21,7 +21,7 @@
         </div>
 
         <!-- Add Button -->
-        <button class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-800">
+        <button @click="emit('open-form', { type: 'pesticides' })" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-800">
           + Add
         </button>
       </div>
@@ -85,11 +85,15 @@ const search = ref(props.filters?.search || '')
 
 watch([search], () => {
   router.get(
-    route('filter.index'),
+    route('dashboard'),
     {
       search: search.value || null,
     },
     { preserveState: true, replace: true }
   )
 }, { debounce: 300 })
+
+
+const emit = defineEmits(['open-form'])
+
 </script>
