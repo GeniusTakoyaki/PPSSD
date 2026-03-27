@@ -22,7 +22,7 @@
 
         <!-- Add Button -->
         <button @click="emit('open-form', { type: 'commodities' })" class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800">
-          + Add
+          + Add Commodity
         </button>
       </div>
     </div>
@@ -41,14 +41,17 @@
           v-for="item in commodities"
           :key="item['Commodity ID']"
           class="border-t hover:bg-gray-50"
+          @click="handleClick(item)"
         >
           <td class="px-6 py-3 font-medium text-gray-800">
-            {{ item.Commodity }}
+            {{ item.name }}
           </td>
 
           <td class="px-6 py-3 text-right space-x-2">
-            <button class="text-blue-600 hover:underline">Edit</button>
-            <button class="text-red-500 hover:underline">Delete</button>
+            <button class="text-blue-600 hover:underline"
+              @click.stop="deleteItem(item)">Edit</button>
+            <button class="text-red-500 hover:underline"
+              @click.stop="deleteItem(item)">Delete</button>
           </td>
         </tr>
 
@@ -93,6 +96,9 @@ watch([search], () => {
 }, { debounce: 300 })
 
 
-const emit = defineEmits(['open-form'])
+const emit = defineEmits(['open-form', 'openPanel'])
 
+const handleClick = (item) => {
+  emit('openPanel', item)
+}
 </script>

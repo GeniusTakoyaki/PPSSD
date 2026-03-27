@@ -13,15 +13,15 @@ class CommodityController extends Controller
         $search = $request->input('search', '');
         $letter = $request->input('letter');
 
-        $query = Commodity::select('Commodity ID', 'Commodity')
-            ->orderBy('Commodity');
+        $query = Commodity::select('Commodity ID', 'name')
+            ->orderBy('name');
 
         if ($search !== '') {
-            $query->where('Commodity', 'like', "%{$search}%");
+            $query->where('name', 'like', "%{$search}%");
         }
 
         if ($letter && $letter !== 'ALL') {
-            $query->whereRaw('UPPER(LEFT(Commodity, 1)) = ?', [$letter]);
+            $query->whereRaw('UPPER(LEFT(name, 1)) = ?', [$letter]);
         }
 
         $commodities = $query->get();
@@ -33,5 +33,29 @@ class CommodityController extends Controller
                 'letter' => $letter ?: 'ALL',
             ],
         ]);
+    }
+
+
+    public function store(Request $request)
+    {
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:commodities,name',
+            'type' => 'required|string',
+            'subtype' => 'required|string',
+        ], ['name.unique' => 'That commodity already exists.']);
+
+        try {
+            Commodity::create($validated);
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] === 1062){
+                return back()->withErrors([
+                    'name' => 'That commodity already exists'
+                ]);
+            }
+        }
+        
+
+        return back()->with('success', 'Added successfully');
     }
 }

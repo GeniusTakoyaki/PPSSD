@@ -18,20 +18,20 @@ class DashboardController extends Controller
         $commoditiesQuery = Commodity::query();
 
         if ($search) {
-            $commoditiesQuery->where('Commodity', 'like', "%{$search}%");
+            $commoditiesQuery->where('name', 'like', "%{$search}%");
         }
 
 
-        $commodities = $commoditiesQuery->orderBy('Commodity')->get();
+        $commodities = $commoditiesQuery->orderBy('name')->get();
 
         // Pesticides query
         $pesticidesQuery = Pesticide::query();
 
         if ($search) {
-            $pesticidesQuery->where('Pesticide', 'like', "%{$search}%");
+            $pesticidesQuery->where('name', 'like', "%{$search}%");
         }
 
-        $pesticides = $pesticidesQuery->orderBy('Pesticide')->get();
+        $pesticides = $pesticidesQuery->orderBy('name')->get();
 
 
 

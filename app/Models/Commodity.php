@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Commodity extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'type', 'subtype'];
+    public $timestamps = false;
 }

@@ -23,5 +23,5 @@ const props = defineProps({
   results: { type: Array, default: () => [] }
 })
 
-console.log(props.name);
+
 </script>

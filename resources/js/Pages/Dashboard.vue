@@ -1,11 +1,15 @@
 <script setup>
-import { ref, computed, reactive, watch} from 'vue'
+import { ref, computed, watch} from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import SemiTab from '@/Components/SemiTab.vue'
 import CommoditiesTable from '@/Components/CommoditiesList.vue'
 import PesticidesTable from '@/Components/PesticidesList.vue'
 import AddModal from '@/Components/AddModal.vue'
+import SlidingPanel from '@/Components/SlidingPanel.vue'
+import MrlTable from '@/components/mrl/MrlTable.vue'
+import { router } from '@inertiajs/vue3'
+
 
 const props = defineProps({
   commodities: Array,
@@ -24,41 +28,79 @@ const tabs = [
 const showModal = ref(false)
 const formType = ref(null)
 
-const form = reactive({
+const form = useForm({
   name: '',
-  type: ''
+  type: '',
+  subtype: ''
 })
 
 const openForm = (payload) => {
   formType.value = payload.type
 
   form.name = ''
-  form.type = payload.type
+  form.type = ''
+  form.subtype = ''
+  form.title = payload.type
 
   showModal.value = true
 }
 
-const currentForm = computed(() => {
-  switch (formType.value) {
-    case 'commodity':
-      return CommodityForm
-    case 'pesticide':
-      return PesticideForm
-    default:
-      return null
-  }
-})
+// const currentForm = computed(() => {
+//   switch (formType.value) {
+//     case 'commodity':
+//       return CommodityForm
+//     case 'pesticide':
+//       return PesticideForm
+//     default:
+//       return null
+//   }
+// })
 
 const submit = () => {
-  console.log('Submitting:', form)
+  const url = form.title === 'pesticides'
+    ? '/pesticides'
+    : '/commodities'
 
-  // later → Inertia.post('/route', form)
+  form.post(url, {
+    onSuccess: () => {
+      showModal.value = false
 
-  showModal.value = false
+      form.reset()
+    },
 
-  form.name = ''
-  form.type = ''
+    onError: () => {
+      // do nothing → modal stays open, errors show
+    }
+  })
 }
+
+
+
+const showPanel = ref(false)
+const selectedItem = ref(null)
+
+
+const openPanel = (item) => {
+  selectedItem.value = item
+  showPanel.value = true
+}
+
+
+watch(showPanel, (val) => {
+  document.body.style.overflow = val ? 'hidden' : ''
+})
+
+
+const saveMrl = (item) => {
+  router.post('/mrl/save', {
+    commodity_id: selectedCommodityId,
+    pesticide_id: item.id,
+    value: item.value
+  }, {
+    preserveScroll: true
+  })
+}
+
 </script>
 
 <template>
@@ -80,6 +122,7 @@ const submit = () => {
     :commodities="commodities"
     :filters="filters"
     @open-form="openForm"
+    @openPanel="openPanel"
   />
 
   <PesticidesTable
@@ -87,13 +130,14 @@ const submit = () => {
     :pesticides="pesticides"
     :filters="filters"
     @open-form="openForm"
+    @openPanel="openPanel"
   />
 
   </AuthenticatedLayout>
 
 <AddModal :show="showModal" @close="showModal = false">
   <h2 class="text-lg font-bold mb-4">
-    Add {{ form.type }}
+    Add {{ form.title }}
   </h2>
 
   <form @submit.prevent="submit">
@@ -106,16 +150,35 @@ const submit = () => {
         type="text"
         class="w-full border rounded px-3 py-2"
         placeholder="Enter name"
+        required
       />
     </div>
 
-    <!-- Optional: show type (readonly) -->
-    <div class="mb-4">
+    <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">
+    {{ form.errors.name }}
+    </div>
+   
+
+    <div v-if="form.title ==='commodities'" class="mb-4" >
       <label class="block text-sm mb-1">Type</label>
       <input
-        :value="form.type"
-        disabled
-        class="w-full border rounded px-3 py-2 bg-gray-100"
+        v-model="form.type"
+        type="text"
+        class="w-full border rounded px-3 py-2"
+        placeholder="Select Type"
+        required
+      />
+    </div>
+
+
+    <div v-if="form.title ==='commodities'" class="mb-4">
+      <label class="block text-sm mb-1">Subtype</label>
+      <input
+        v-model="form.subtype"
+        type="text"
+        class="w-full border rounded px-3 py-2"
+        placeholder="Select Subtype"
+        required
       />
     </div>
 
@@ -139,6 +202,18 @@ const submit = () => {
 
   </form>
 </AddModal>
+
+
+<SlidingPanel
+  :show="showPanel"
+  @close="showPanel = false"
+>
+  <h2 class="text-lg font-bold">
+    {{ selectedItem?.name }}
+  </h2>
+
+  <p>More details here...</p>
+</SlidingPanel>
 
 
 </template>

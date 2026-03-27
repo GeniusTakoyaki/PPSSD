@@ -42,10 +42,12 @@ const handleSearch = () => {
 
         <select
           v-model="searchCategory"
-          required
-          class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
+          :class="[
+            'flex-1 px-4 py-3 border border-gray-200 rounded-xl appearance-none',
+            !searchCategory ? 'text-gray-500' : 'text-black'
+          ]"
         >
-          <option disabled value="">Select Category</option>
+          <option disabled hidden value="" class="text-gray-400">Select Category</option>
           <option value="Pesticides">Pesticide</option>
           <option value="Commodities">Commodity</option>
         </select>
@@ -53,9 +55,12 @@ const handleSearch = () => {
 
         <select
           v-model="searchType"
-          class="flex-1 px-4 py-3 border border-gray-200 rounded-xl"
+          :class="[
+            'flex-1 px-4 py-3 border border-gray-200 rounded-xl appearance-none',
+            !searchType ? 'text-gray-500' : 'text-black'
+          ]"
         >
-          <option disabled value="">Select Type</option>
+          <option disabled hidden value="" class="text-gray-400">Select Type</option>
           <option value="pesticides">Group</option>
           <option value="commodities">Item</option>
         </select>

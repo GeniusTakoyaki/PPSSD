@@ -42,7 +42,7 @@
 
     <AZList
       :items="pesticides"
-      field="Pesticide"
+      field="Pesticides"
       idField="Pesticide ID"
     />
 

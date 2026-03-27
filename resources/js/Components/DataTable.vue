@@ -83,12 +83,12 @@ const searchCategory = ref(props.category)
 const search = ref(props.name)
 
 
-
 // Computed: current items to render
 const filteredItems = computed(() => {
   return props.results || []
 })
 
+console.log(props.name);
 
 
 // Watch search inputs and trigger search

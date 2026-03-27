@@ -23,16 +23,16 @@ class MRLController extends Controller
                 ->join('commodities', 'pns.Commodity ID', '=', 'commodities.Commodity ID');
 
             if ($category === 'Commodities') {
-                $query->whereRaw('LOWER(commodities.Commodity) = ?', [strtolower($name)]);
+                $query->whereRaw('LOWER(commodities.name) = ?', [strtolower($name)]);
             }
 
             if ($category === 'Pesticides') {
-                $query->whereRaw('LOWER(pesticides.Pesticide) = ?', [strtolower($name)]);
+                $query->whereRaw('LOWER(pesticides.name) = ?', [strtolower($name)]);
             }
 
             $results = $query->select(
-                'commodities.Commodity as commodity',
-                'pesticides.Pesticide as pesticide',
+                'commodities.name as commodity',
+                'pesticides.name as pesticide',
                 'pns.MRL as mrl'
             )->get();
         }
@@ -42,5 +42,7 @@ class MRLController extends Controller
             'category' => $category,
             'results' => $results
         ]);
+
+
     }
 }

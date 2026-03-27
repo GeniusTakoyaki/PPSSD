@@ -13,15 +13,15 @@ class PesticideController extends Controller{
         $search = $request->input('search', '');
         $letter = $request->input('letter');
 
-        $query = Pesticide::select('Pesticide ID', 'Pesticide')
-            ->orderBy('Pesticide');
+        $query = Pesticide::select('Pesticide ID', 'name')
+            ->orderBy('name');
 
         if ($letter && $letter !== 'ALL') {
-            $query->whereRaw('UPPER(LEFT(Pesticide, 1)) = ?', [strtoupper($letter)]);
+            $query->whereRaw('UPPER(LEFT(name, 1)) = ?', [strtoupper($letter)]);
         }
 
         if ($search !== '') {
-            $query->where('Pesticide', 'LIKE', "%{$search}%");
+            $query->where('name', 'LIKE', "%{$search}%");
         }
 
         $pesticides = $query->get();
@@ -33,6 +33,29 @@ class PesticideController extends Controller{
                 'letter' => $letter ?: 'ALL',
             ],
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:pesticides,name',
+        ], [
+            'name.unique' => 'That pesticide already exists.',
+        ]);
+
+        try {
+            Pesticide::create($validated);
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return back()->withErrors([
+                    'name' => 'That pesticide already exists.'
+                ]);
+            }
+
+            throw $e;
+        }
+
+        return back()->with('success', 'Added successfully');
     }
 
 

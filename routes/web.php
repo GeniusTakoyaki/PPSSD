@@ -35,12 +35,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('/commodities', [CommodityController::class, 'index'])
-    ->name('commodities.index');
+Route::resource('commodities', CommodityController::class);
 
-Route::get('/pesticides', [PesticideController::class, 'index'])
-    ->name('pesticides.index');
-
+Route::resource('pesticides', PesticideController::class);
 
 Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
 

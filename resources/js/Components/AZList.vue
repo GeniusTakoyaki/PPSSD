@@ -23,12 +23,12 @@
             <h3
               class="font-semibold text-lg text-green-900 group-hover:text-green-700 transition"
             >
-              {{ item[field] }}
+              {{ item.name }}
             </h3>
             <span
               class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700"
             >
-              {{ item[field]?.charAt(0)?.toUpperCase() || '' }}
+              {{ item.name?.charAt(0)?.toUpperCase() || '' }}
             </span>
           </div>
         </div>
@@ -47,8 +47,6 @@
 import { computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 
-  var cat = '';
-
 const props = defineProps({
   items: {
     type: Array,
@@ -65,28 +63,22 @@ const props = defineProps({
 })
 
 
-  if (props.field == 'Commodity'){
-    cat = 'Commodities'
-  } else {
-    cat = 'Pesticides'
-  }
+const basis = 'name';
+
 
 const handleSearch = (item) => {
   router.get('/search', {
-    search: item[props.field],
-    category: cat,
+    search: item[basis],
+    category: props.field,
     type: "test"
-  }, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
   })
+
 }
 
 const grouped = computed(() => {
   const groups = {}
   props.items.forEach(item => {
-    const value = item?.[props.field]
+    const value = item?.[basis]
     if (!value) return
     const letter = value.charAt(0).toUpperCase()
     if (!groups[letter]) groups[letter] = []
@@ -95,7 +87,7 @@ const grouped = computed(() => {
 
   // Sort each group alphabetically
   Object.keys(groups).forEach(k => {
-    groups[k].sort((a, b) => a[props.field].localeCompare(b[props.field]))
+    groups[k].sort((a, b) => a[basis].localeCompare(b[basis]))
   })
 
  

@@ -42,7 +42,7 @@
 
     <AZList
       :items="commodities"
-      field="Commodity"
+      field="Commodities"
       idField="Commodity ID"
     />
   </div>
