@@ -41,4 +41,7 @@ Route::resource('pesticides', PesticideController::class);
 
 Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
 
+Route::get('/mrl/commodity/{id}', [MrlController::class, 'byCommodity']);
+Route::get('/mrl/pesticide/{id}', [MrlController::class, 'byPesticide']);
+
 require __DIR__.'/auth.php';

@@ -1,5 +1,6 @@
 <template>
   <!-- Backdrop -->
+   
   <div
     v-if="show"
     class="fixed inset-0 bg-black/30 z-40"
@@ -7,7 +8,7 @@
   />
 
   <!-- Panel -->
-  <transition name="slide-up">
+  <transition name="slide-up" class="mx-1">
     <div
       v-if="show"
       class="fixed left-0 right-0 bottom-0 bg-white rounded-t-2xl shadow-xl z-50 overflow-hidden flex flex-col"
@@ -17,7 +18,7 @@
       <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-3"></div>
 
       <!-- Content -->
-      <div class="flex-1 overflow-y-auto p-4">
+      <div class="flex-1 overflow-y-auto py-4 px-14">
         <slot />
       </div>
     </div>

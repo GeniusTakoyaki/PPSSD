@@ -7,7 +7,7 @@ import CommoditiesTable from '@/Components/CommoditiesList.vue'
 import PesticidesTable from '@/Components/PesticidesList.vue'
 import AddModal from '@/Components/AddModal.vue'
 import SlidingPanel from '@/Components/SlidingPanel.vue'
-import MrlTable from '@/components/mrl/MrlTable.vue'
+import MrlTable from '@/Components/MrlTable.vue'
 import { router } from '@inertiajs/vue3'
 
 
@@ -207,12 +207,15 @@ const saveMrl = (item) => {
 <SlidingPanel
   :show="showPanel"
   @close="showPanel = false"
->
-  <h2 class="text-lg font-bold">
-    {{ selectedItem?.name }}
-  </h2>
+>   <h2 class="text-lg font-bold">
+      {{ selectedItem?.name }}
+    </h2>
 
-  <p>More details here...</p>
+    <MrlTable>
+      
+    </MrlTable>
+
+
 </SlidingPanel>
 
 
