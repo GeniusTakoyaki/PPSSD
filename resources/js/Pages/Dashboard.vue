@@ -75,14 +75,14 @@ const submit = () => {
 }
 
 
-
 const showPanel = ref(false)
 const selectedItem = ref(null)
 
 
-const openPanel = (item) => {
-  selectedItem.value = item
-  showPanel.value = true
+const openPanel = async ({ type, id }) => {
+  const response = await fetch(`/dashboard/${type}/${id}/data`)
+  selectedItem.value = await response.json();
+  showPanel.value = true;
 }
 
 
@@ -211,9 +211,12 @@ const saveMrl = (item) => {
       {{ selectedItem?.name }}
     </h2>
 
-    <MrlTable>
-      
-    </MrlTable>
+    <MrlTable
+      :items="selectedItem"
+      mode="commodity"
+      title="Pesticides for this Commodity"
+      label="Pesticide"
+    />
 
 
 </SlidingPanel>

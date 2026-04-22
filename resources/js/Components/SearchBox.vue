@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import fao from "@/assets/fao.png"
 import asean from "@/assets/asean-logo.png"
+import useCountries from '@/Composables/useCountries'
 
 
 // reactive variables
@@ -15,12 +16,17 @@ const handleSearch = () => {
     category: searchCategory.value
   })
 }
+
+
+const { countries } = useCountries()
+const selectedCountry = ref('')
 </script>
 
 <template>
   <section class="min-h-[80vh] flex items-center justify-center bg-green-800 px-6">
     <div class="w-full max-w-5xl text-center">
       
+     
       <h1 class="text-4xl font-bold text-white mb-4">
         PNS Pesticide MRL Database
       </h1>
@@ -34,8 +40,24 @@ const handleSearch = () => {
         class="bg-white rounded-2xl shadow-lg p-4 flex flex-col md:flex-row gap-4"
       >
 
+        <!-- <select v-model="selectedCountry" 
+        :class="[
+            'flex-1 px-4 py-3 border border-gray-200 rounded-xl appearance-none',
+            !selectedCountry ? 'text-gray-500' : 'text-black'
+          ]" >
+          <option hidden class="text-gray-400" disabled value="">Select Country</option>
 
-        <select
+          <option 
+            v-for="country in countries" 
+            :key="country.ID" 
+            :value="country.ID"
+          >
+            {{ country.Country }}
+          </option>
+        </select> -->
+
+        <select 
+          required
           v-model="searchCategory"
           :class="[
             'flex-1 px-4 py-3 border border-gray-200 rounded-xl appearance-none',

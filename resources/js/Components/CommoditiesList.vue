@@ -99,6 +99,7 @@ watch([search], () => {
 const emit = defineEmits(['open-form', 'openPanel'])
 
 const handleClick = (item) => {
-  emit('openPanel', item)
+  console.log(item);
+  emit('openPanel', { type: 'commodity', id: item['Commodity ID'] })
 }
 </script>

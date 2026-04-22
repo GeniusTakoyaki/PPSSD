@@ -86,4 +86,43 @@ class MRLController extends Controller
             'selectedId' => $id
         ]);
     }
+
+
+   public function allCommodity($id)
+    {
+        $pesticides = DB::table('pesticides as p')
+            ->leftJoin('pns as m', function ($join) use ($id) {
+                $join->on('m.Pesticide ID', '=', 'p.Pesticide ID')
+                    ->where('m.Commodity ID', '=', $id);
+            })
+            ->select(
+                'p.Pesticide ID as id',
+                'p.name as name',
+                'm.MRL as mrl_value'
+            )
+            ->orderBy('p.name')
+            ->get();
+
+        return response()->json($pesticides);
+    }
+
+    public function allPesticide($id)
+    {
+        $items = DB::table('commodities as c')
+            ->leftJoin('pns as m', function ($join) use ($id) {
+                $join->on('m.Commodity ID', '=', 'c.Commodity ID')
+                    ->where('m.Pesticide ID', '=', $id);
+            })
+            ->select(
+                'c.Commodity ID as id',
+                'c.name as name',
+                'm.MRL as mrl_value'
+            )
+            ->get();
+
+        return response()->json($items);
+    }
+
+
+
 }

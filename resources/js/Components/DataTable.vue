@@ -38,7 +38,8 @@
 
         <button
           class="flex items-center justify-center gap-2 h-12 w-24 rounded-full border border-green-700 bg-green-700 px-5 text-white shadow-sm backdrop-blur-sm hover:bg-green-800 focus:ring-2 focus:ring-green-400/50 focus:outline-none"
-        >
+          @click="goback(searchCategory)"
+          >
           <span class="text-xl">‹</span>
           <span class="text-sm font-medium">Back</span>
         </button>
@@ -101,6 +102,27 @@ const filteredItems = computed(() => {
 })
 
 console.log(props.name);
+
+
+function goback(condition){
+  search.value = '';
+  if (condition == 'Pesticide'){
+    router.get(route('pesticides.index'), {
+      search: search.value || null,
+    }, {
+      preserveState: true,   // optional: keeps current component state
+    })
+  } else {
+    router.get(route('commodities.index'), {
+      search: search.value || null,
+
+    }, {
+      preserveState: true,   // optional: keeps current component state
+    })
+  }
+}
+
+
 
 
 // Watch search inputs and trigger search

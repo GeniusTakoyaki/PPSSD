@@ -8,6 +8,7 @@ use App\Http\Controllers\CommodityController;
 use App\Http\Controllers\PesticideController;
 use App\Http\Controllers\MRLController;
 use App\Http\Controllers\DashboardController;
+use App\Models\Countries;
 use Illuminate\Http\Request;
 
 Route::get('/about', function () {
@@ -18,10 +19,6 @@ Route::get('/about', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -43,5 +40,21 @@ Route::get('/search', [MRLController::class, 'index'])->name('mrl.index');
 
 Route::get('/mrl/commodity/{id}', [MrlController::class, 'byCommodity']);
 Route::get('/mrl/pesticide/{id}', [MrlController::class, 'byPesticide']);
+
+
+Route::get('/api/countries', function () {
+    return Countries::select('ID', 'Country', 'Acronym')
+                    ->orderBy('Country')
+                    ->get();
+});
+
+Route::get('/dashboard/pesticide/{id}/data', [MRLController::class, 'allPesticide']);
+Route::get('/dashboard/commodity/{id}/data', [MRLController::class, 'allCommodity']);
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
 
 require __DIR__.'/auth.php';
