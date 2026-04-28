@@ -58,5 +58,16 @@ class PesticideController extends Controller{
         return back()->with('success', 'Added successfully');
     }
 
-
+    public function destroy($id)
+        {
+            try {
+                Pesticide::findOrFail($id)->delete();
+                return back()->with('success', 'Deleted successfully.|' . now()->timestamp);
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($e->errorInfo[1] === 1451) {
+                    return back()->with('error', 'Cannot delete — has existing MRL records.|' . now()->timestamp);
+                }
+                return back()->with('error', 'Something went wrong.|' . now()->timestamp);
+            }
+        }
 }

@@ -88,7 +88,7 @@ class MRLController extends Controller
     }
 
 
-   public function allCommodity($id)
+    public function allCommodity($id)
     {
         $pesticides = DB::table('pesticides as p')
             ->leftJoin('pns as m', function ($join) use ($id) {
@@ -98,7 +98,9 @@ class MRLController extends Controller
             ->select(
                 'p.Pesticide ID as id',
                 'p.name as name',
-                'm.MRL as mrl_value'
+                'm.MRL as mrl_value',
+                'm.MRL ID as mrl_id',
+                DB::raw("$id as commodity_id") 
             )
             ->orderBy('p.name')
             ->get();
@@ -116,13 +118,51 @@ class MRLController extends Controller
             ->select(
                 'c.Commodity ID as id',
                 'c.name as name',
-                'm.MRL as mrl_value'
+                'm.MRL as mrl_value',
+                'm.MRL ID as mrl_id',
+                DB::raw("$id as pesticide_id") 
             )
             ->get();
 
         return response()->json($items);
     }
 
+    public function bulkUpdate(Request $request)
+        {
+            $request->validate([
+                'items'                => 'required|array',
+                'items.*.id'           => 'required|integer',
+                'items.*.mrl_id'       => 'nullable|integer',   // ← allow null
+                'items.*.value'        => 'nullable|numeric|min:0',
+                'items.*.commodity_id'  => 'nullable|integer',
+                'items.*.pesticide_id'  => 'nullable|integer',
+            ]);
+            try {
+            foreach ($request->items as $item) {
+                $isEmpty = is_null($item['value']) || $item['value'] === '';
 
+                if ($isEmpty) {
+                    if ($item['mrl_id']) {
+                        DB::table('pns')->where('MRL ID', $item['mrl_id'])->delete();
+                    }
+                    continue;
+                }
 
+                // updateOrInsert checks if the row exists first, then updates or inserts
+                DB::table('pns')->updateOrInsert(
+                    [
+                        'Pesticide ID' => $item['pesticide_id'] ?? $item['id'],
+                        'Commodity ID' => $item['commodity_id'] ?? $item['id'],
+                    ],
+                    [
+                        'MRL' => $item['value'],
+                    ]
+                );
+            }
+
+            return back()->with('success', 'Saved successfully.|' . now()->timestamp);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Something went wrong.|' . now()->timestamp);
+        }
+    }
 }

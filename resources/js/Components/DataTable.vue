@@ -49,11 +49,11 @@
 
       <div class="rounded-2xl border border-slate-200/70 bg-white/70 shadow-2xl overflow-x-auto">
         <table class="min-w-full table-auto">
-          <thead class="bg-indigo-50 sticky top-0">
+          <thead class="bg-green-700 sticky top-0">
             <tr>
-              <th class="px-6 py-3 text-left text-indigo-700 font-semibold">ID</th>
-              <th class="px-6 py-3 text-left text-indigo-700 font-semibold">Name</th>
-              <th class="px-6 py-3 text-left text-indigo-700 font-semibold">MRL (mg/kg)</th>
+              <th class="px-6 py-3 text-left text-white font-semibold">ID</th>
+              <th class="px-6 py-3 text-left text-white font-semibold">Name</th>
+              <th class="px-6 py-3 text-left text-white font-semibold">MRL (mg/kg)</th>
             </tr>
           </thead>
 
@@ -61,7 +61,7 @@
             <tr
               v-for="(p, index) in filteredItems"
               :key="index"
-              class="hover:bg-indigo-50 transition-colors duration-200"
+              class="hover:bg-green-100 transition-colors duration-200"
             >
               <td class="px-6 py-3 border-b">{{ index + 1 }}</td>
               <td class="px-6 py-3 border-b font-medium">
@@ -101,7 +101,6 @@ const filteredItems = computed(() => {
   return props.results || []
 })
 
-console.log(props.name);
 
 
 function goback(condition){
@@ -141,7 +140,7 @@ watch([search, searchCategory], debounce(([newSearch, newCategory]) => {
 watch(
   () => props.results,
   (newResults) => {
-    console.log('Updated search results:', newResults)
+
   }
 )
 </script>

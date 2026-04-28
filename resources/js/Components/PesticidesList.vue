@@ -2,14 +2,20 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     
     <!-- 🔹 Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b bg-gradient-to-r from-green-700 to-green-400">
       <div>
-        <h2 class="text-lg font-semibold text-gray-800">Pesticide Records</h2>
-        <p class="text-sm text-gray-500">Manage pesticide list</p>
+        <h2 class="text-lg font-semibold text-white">Pesticide Records</h2>
+        <p class="text-sm text-gray-100">Manage pesticide list</p>
       </div>
 
       <div class="flex gap-2 items-center">
-        <!-- Search -->
+
+        <!-- Add Button -->
+        <button @click="emit('open-form', { type: 'pesticides' })" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-800">
+          + Add Pesticide
+        </button>
+
+                <!-- Search -->
         <div class="relative">
           <input
             v-model="search"
@@ -20,18 +26,14 @@
           <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
         </div>
 
-        <!-- Add Button -->
-        <button @click="emit('open-form', { type: 'pesticides' })" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-800">
-          + Add Pesticide
-        </button>
       </div>
     </div>
 
     <!-- 🔹 Table -->
     <table class="w-full text-sm">
-      <thead class="bg-gray-50 text-gray-600">
+      <thead class="bg-gradient-to-r from-amber-700 to-amber-400">
         <tr>
-          <th class="text-left px-6 py-3">Pesticide</th>
+          <th class="text-left px-6 py-3 text-white">Pesticide</th>
           <th class="text-right px-6 py-3">Actions</th>
         </tr>
       </thead>
@@ -40,7 +42,7 @@
         <tr
           v-for="item in pesticides"
           :key="item['Pesticide ID']"
-          class="border-t hover:bg-gray-50"
+          class="border-t hover:bg-green-100"
           @click="handleClick(item)"
         >
 
@@ -49,10 +51,10 @@
           </td>
 
           <td class="px-6 py-3 text-right space-x-2">
-            <button class="text-blue-600 hover:underline"
-              @click.stop="deleteItem(item)">Edit</button>
+            <!-- <button class="text-blue-600 hover:underline"
+              @click.stop="deleteItem(item)">Edit</button> -->
             <button class="text-red-500 hover:underline"
-              @click.stop="deleteItem(item)">Delete</button>
+              @click.stop="deletePesticide(item['Pesticide ID'])">Delete</button>
           </td>
         </tr>
 
@@ -100,8 +102,14 @@ watch([search], () => {
 const emit = defineEmits(['open-form', 'openPanel'])
 
 const handleClick = (item) => {
-  console.log(item);
   emit('openPanel', { type: 'pesticide', id: item['Pesticide ID'] })
 }
 
+const deletePesticide = (id) => {
+    if (!confirm('Are you sure you want to delete this pesticide?')) return
+
+    router.delete(route('pesticides.destroy', { id: id }), {
+        preserveScroll: true,
+    })
+}
 </script>

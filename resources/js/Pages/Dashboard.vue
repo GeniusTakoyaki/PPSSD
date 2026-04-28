@@ -1,14 +1,13 @@
 <script setup>
-import { ref, computed, watch} from 'vue'
+import { ref, watch} from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, useForm, router, usePage } from '@inertiajs/vue3'
 import SemiTab from '@/Components/SemiTab.vue'
 import CommoditiesTable from '@/Components/CommoditiesList.vue'
 import PesticidesTable from '@/Components/PesticidesList.vue'
 import AddModal from '@/Components/AddModal.vue'
 import SlidingPanel from '@/Components/SlidingPanel.vue'
 import MrlTable from '@/Components/MrlTable.vue'
-import { router } from '@inertiajs/vue3'
 
 
 const props = defineProps({
@@ -45,16 +44,6 @@ const openForm = (payload) => {
   showModal.value = true
 }
 
-// const currentForm = computed(() => {
-//   switch (formType.value) {
-//     case 'commodity':
-//       return CommodityForm
-//     case 'pesticide':
-//       return PesticideForm
-//     default:
-//       return null
-//   }
-// })
 
 const submit = () => {
   const url = form.title === 'pesticides'
@@ -79,10 +68,15 @@ const showPanel = ref(false)
 const selectedItem = ref(null)
 
 
+const selectedId = ref(null)
+const selectedType = ref(null)
+
 const openPanel = async ({ type, id }) => {
   const response = await fetch(`/dashboard/${type}/${id}/data`)
-  selectedItem.value = await response.json();
-  showPanel.value = true;
+  selectedItem.value = await response.json()
+  selectedId.value = id        // ← store the id
+  selectedType.value = type    // ← store the type
+  showPanel.value = true
 }
 
 
@@ -90,16 +84,49 @@ watch(showPanel, (val) => {
   document.body.style.overflow = val ? 'hidden' : ''
 })
 
+const showSuccess = ref(false)
+const showError = ref(false)
 
-const saveMrl = (item) => {
-  router.post('/mrl/save', {
-    commodity_id: selectedCommodityId,
-    pesticide_id: item.id,
-    value: item.value
+const handleSave = (dirtyItems) => {
+  router.post(route('mrl.bulkUpdate'), {
+    items: dirtyItems.map(item => ({
+      ...item,
+      commodity_id: selectedType.value === 'commodity' ? selectedId.value : item.id,
+      pesticide_id: selectedType.value === 'pesticide' ? selectedId.value : item.id,
+    }))
   }, {
-    preserveScroll: true
-  })
+    preserveScroll: true,
+    })
 }
+
+const page = usePage()
+
+const successKey = ref(0)
+const errorKey = ref(0)
+
+watch(() => page.props.flash?.success, (val) => {
+  if (val) {
+    successKey.value++
+  }
+})
+
+watch(() => page.props.flash?.error, (val) => {
+  if (val) {
+    errorKey.value++
+  }
+})
+
+watch(successKey, () => {
+  showSuccess.value = true
+  setTimeout(() => showSuccess.value = false, 3000)
+})
+
+watch(errorKey, () => {
+  showError.value = true
+  setTimeout(() => showError.value = false, 3000)
+})
+
+
 
 </script>
 
@@ -107,13 +134,13 @@ const saveMrl = (item) => {
   <Head title="Dashboard" />
 
   <AuthenticatedLayout>
-    <template #header>
+    <!-- <template #header>
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
           Overview
         </h2>
       </div>
-    </template>
+    </template> -->
 
   <SemiTab v-model="activeTab" :tabs="tabs" />
 
@@ -134,6 +161,8 @@ const saveMrl = (item) => {
   />
 
   </AuthenticatedLayout>
+
+ 
 
 <AddModal :show="showModal" @close="showModal = false">
   <h2 class="text-lg font-bold mb-4">
@@ -211,15 +240,27 @@ const saveMrl = (item) => {
       {{ selectedItem?.name }}
     </h2>
 
-    <MrlTable
-      :items="selectedItem"
-      mode="commodity"
-      title="Pesticides for this Commodity"
-      label="Pesticide"
-    />
+  <MrlTable
+    :items="selectedItem"
+    mode="commodity"
+    :title="activeTab === 'pesticides' ? 'List of Pesticides with MRLs' : 'List of Commodities with MRLs'"
+    :label="activeTab.charAt(0).toUpperCase() + activeTab.slice(1)"
+    @saveAll="handleSave"
+  />
 
 
 </SlidingPanel>
 
+<div 
+  v-if="showSuccess"
+  class="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded shadow-lg text-sm"
+>
+  ✓ MRL values updated.
+</div>
+
+<div v-if="showError"
+     class="fixed top-4 right-4 z-50 bg-red-600 text-white px-4 py-2 rounded shadow-lg text-sm">
+    ✕ Something went wrong.
+</div>
 
 </template>

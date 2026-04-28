@@ -11,20 +11,30 @@ use App\Http\Controllers\DashboardController;
 use App\Models\Countries;
 use Illuminate\Http\Request;
 
-Route::get('/about', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/about', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+    Route::get('/dashboard/pesticide/{id}/data', [MRLController::class, 'allPesticide']);
+    Route::get('/dashboard/commodity/{id}/data', [MRLController::class, 'allCommodity']);
+    Route::post('/mrl/bulk-update', [MrlController::class, 'bulkUpdate'])->name('mrl.bulkUpdate');
+
+    Route::delete('/pesticides/{id}', [PesticideController::class, 'destroy'])->name('pesticides.destroy');
+    Route::delete('/commodities/{id}', [CommodityController::class, 'destroy'])->name('commodities.destroy');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware(['auth', 'verified'])
+        ->name('dashboard');
+    });
 
 
 Route::get('/', function () {
@@ -48,13 +58,11 @@ Route::get('/api/countries', function () {
                     ->get();
 });
 
-Route::get('/dashboard/pesticide/{id}/data', [MRLController::class, 'allPesticide']);
-Route::get('/dashboard/commodity/{id}/data', [MRLController::class, 'allCommodity']);
 
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+
+
+
 
 
 require __DIR__.'/auth.php';

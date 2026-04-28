@@ -2,14 +2,19 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     
     <!-- 🔹 Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-5 border-b bg-gradient-to-r from-green-700 to-green-400">
       <div>
-        <h2 class="text-lg font-semibold text-gray-800">Commodity Records</h2>
-        <p class="text-sm text-gray-500">Manage commodity list</p>
+        <h2 class="text-lg font-semibold text-white">Commodity Records</h2>
+        <p class="text-sm text-gray-100">Manage commodity list</p>
       </div>
 
       <div class="flex gap-2 items-center">
-        <!-- Search -->
+        <!-- Add Button -->
+        <button @click="emit('open-form', { type: 'commodities' })" class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800">
+          + Add Commodity
+        </button>
+
+                <!-- Search -->
         <div class="relative">
           <input
             v-model="search"
@@ -20,18 +25,14 @@
           <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
         </div>
 
-        <!-- Add Button -->
-        <button @click="emit('open-form', { type: 'commodities' })" class="bg-green-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-800">
-          + Add Commodity
-        </button>
       </div>
     </div>
 
     <!-- 🔹 Table -->
     <table class="w-full text-sm">
-      <thead class="bg-gray-50 text-gray-600">
+      <thead class="bg-gradient-to-r from-red-700 to-red-400">
         <tr>
-          <th class="text-left px-6 py-3">Commodity</th>
+          <th class="text-left px-6 py-3 text-white">Commodity</th>
           <th class="text-right px-6 py-3">Actions</th>
         </tr>
       </thead>
@@ -40,7 +41,7 @@
         <tr
           v-for="item in commodities"
           :key="item['Commodity ID']"
-          class="border-t hover:bg-gray-50"
+          class="border-t hover:bg-green-100"
           @click="handleClick(item)"
         >
           <td class="px-6 py-3 font-medium text-gray-800">
@@ -48,10 +49,10 @@
           </td>
 
           <td class="px-6 py-3 text-right space-x-2">
-            <button class="text-blue-600 hover:underline"
-              @click.stop="deleteItem(item)">Edit</button>
+            <!-- <button class="text-blue-600 hover:underline"
+              @click.stop="deleteItem(item)">Edit</button> -->
             <button class="text-red-500 hover:underline"
-              @click.stop="deleteItem(item)">Delete</button>
+              @click.stop="deleteCommodity(item['Commodity ID'])">Delete</button>
           </td>
         </tr>
 
@@ -83,7 +84,7 @@ const props = defineProps({
 })
 
 const search = ref(props.filters?.search || '')
-console.log(props['commodities']);
+
 
 watch([search], () => {
   router.get(
@@ -99,7 +100,14 @@ watch([search], () => {
 const emit = defineEmits(['open-form', 'openPanel'])
 
 const handleClick = (item) => {
-  console.log(item);
   emit('openPanel', { type: 'commodity', id: item['Commodity ID'] })
+}
+
+const deleteCommodity = (id) => {
+    if (!confirm('Are you sure you want to delete this commodity?')) return
+
+    router.delete(route('commodities.destroy', { id: id }), {  // ← pass as object
+        preserveScroll: true,
+    })
 }
 </script>
