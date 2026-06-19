@@ -33,7 +33,8 @@ class MRLController extends Controller
             $results = $query->select(
                 'commodities.name as commodity',
                 'pesticides.name as pesticide',
-                'pns.MRL as mrl'
+                'pns.MRL as mrl',
+                'pns.Year_Developed as year' 
             )->get();
         }
 

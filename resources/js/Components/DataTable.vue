@@ -54,6 +54,7 @@
               <th class="px-6 py-3 text-left text-white font-semibold">ID</th>
               <th class="px-6 py-3 text-left text-white font-semibold">Name</th>
               <th class="px-6 py-3 text-left text-white font-semibold">MRL (mg/kg)</th>
+              <th class="px-6 py-3 text-left text-white font-semibold">Year Developed</th>
             </tr>
           </thead>
 
@@ -68,6 +69,7 @@
                 {{ category === 'Commodities' ? p.pesticide : p.commodity }}
               </td>
               <td class="px-6 py-3 border-b">{{ p.mrl }}</td>
+              <td class="px-6 py-3 border-b">{{ p.year }}</td>
             </tr>
           </tbody>
         </table>
@@ -115,7 +117,7 @@ const filteredItems = computed(() => {
   return props.results || []
 })
 
-
+console.log(props.results[0]);
 
 function goback(condition){
   search.value = '';
