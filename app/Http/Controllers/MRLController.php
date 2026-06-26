@@ -131,42 +131,45 @@ class MRLController extends Controller
         return response()->json($items);
     }
 
-    public function bulkUpdate(Request $request)
+        public function bulkUpdate(Request $request)
         {
-            $request->validate([
-                'items'                => 'required|array',
-                'items.*.id'           => 'required|integer',
-                'items.*.mrl_id'       => 'nullable|integer',   // ← allow null
-                'items.*.value'        => 'nullable|numeric|min:0',
-                'items.*.commodity_id'  => 'nullable|integer',
-                'items.*.pesticide_id'  => 'nullable|integer',
-            ]);
-            try {
-            foreach ($request->items as $item) {
-                $isEmpty = is_null($item['value']) || $item['value'] === '';
 
-                if ($isEmpty) {
-                    if ($item['mrl_id']) {
-                        DB::table('pns')->where('MRL ID', $item['mrl_id'])->delete();
+            $request->validate([
+                'items'                  => 'required|array',
+                'items.*.id'             => 'required|integer',
+                'items.*.mrl_id'         => 'nullable|integer',
+                'items.*.value'          => 'nullable|numeric|min:0',
+                'items.*.year_developed' => 'nullable|integer|min:1900',
+                'items.*.commodity_id'   => 'nullable|integer',
+                'items.*.pesticide_id'   => 'nullable|integer',
+            ]);
+
+            // try {
+                foreach ($request->items as $item) {
+                    $isEmpty = is_null($item['value']) || $item['value'] === '';
+
+                    if ($isEmpty) {
+                        if ($item['mrl_id']) {
+                            DB::table('pns')->where('MRL ID', $item['mrl_id'])->delete();
+                        }
+                        continue;
                     }
-                    continue;
+
+                    DB::table('pns')->updateOrInsert(
+                        [
+                            'Pesticide ID' => $item['pesticide_id'] ?? $item['id'],
+                            'Commodity ID' => $item['commodity_id'] ?? $item['id'],
+                        ],
+                        [
+                            'MRL'            => $item['value'],
+                            'Year_Developed' => $item['year_developed'] ?? null,
+                        ]
+                    );
                 }
 
-                // updateOrInsert checks if the row exists first, then updates or inserts
-                DB::table('pns')->updateOrInsert(
-                    [
-                        'Pesticide ID' => $item['pesticide_id'] ?? $item['id'],
-                        'Commodity ID' => $item['commodity_id'] ?? $item['id'],
-                    ],
-                    [
-                        'MRL' => $item['value'],
-                    ]
-                );
-            }
-
-            return back()->with('success', 'Saved successfully.|' . now()->timestamp);
-        } catch (\Exception $e) {
-            return back()->with('error', 'Something went wrong.|' . now()->timestamp);
+            //     return back()->with('success', 'Saved successfully.|' . now()->timestamp);
+            // } catch (\Exception $e) {
+            //     return back()->with('error', 'Something went wrong.|' . now()->timestamp);
+            // }
         }
-    }
 }

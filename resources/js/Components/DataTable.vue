@@ -112,9 +112,13 @@ const searchCategory = ref(props.category)
 const search = ref(props.name)
 
 
-// Computed: current items to render
 const filteredItems = computed(() => {
-  return props.results || []
+  const items = props.results || []
+  return [...items].sort((a, b) => {
+    const aVal = (props.category === 'Commodities' ? a.pesticide : a.commodity) ?? ''
+    const bVal = (props.category === 'Commodities' ? b.pesticide : b.commodity) ?? ''
+    return aVal.localeCompare(bVal)
+  })
 })
 
 console.log(props.results[0]);

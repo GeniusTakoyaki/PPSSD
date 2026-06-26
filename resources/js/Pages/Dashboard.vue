@@ -88,6 +88,8 @@ const showSuccess = ref(false)
 const showError = ref(false)
 
 const handleSave = (dirtyItems) => {
+  console.log('Sending to backend:', JSON.stringify(dirtyItems, null, 2))
+
   router.post(route('mrl.bulkUpdate'), {
     items: dirtyItems.map(item => ({
       ...item,
@@ -96,7 +98,7 @@ const handleSave = (dirtyItems) => {
     }))
   }, {
     preserveScroll: true,
-    })
+  })
 }
 
 const page = usePage()

@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-3">
-
     <!-- Header -->
     <div class="flex justify-between items-center">
       <h2 class="text-lg font-semibold">
@@ -31,6 +30,7 @@
           <tr class="text-left text-gray-600">
             <th class="py-2">{{ label }}</th>
             <th class="py-2 w-28">MRL</th>
+            <th class="py-2 w-36 whitespace-nowrap px-2">Year Developed</th>
             <th class="py-2 w-8"></th>
           </tr>
         </thead>
@@ -64,6 +64,24 @@
                 :class="dirty.has(item.id) ? 'border-amber-400' : ''"
                 placeholder="—"
                 @input="markDirty(item)"
+                @wheel.prevent="$event.target.blur()"
+              />
+            </td>
+
+
+           <!-- Year Developed input -->
+            <td class="py-2 px-2">
+              <input
+                v-model="item.year"
+                type="number"
+                step="1"
+                min="1900"
+                :max="new Date().getFullYear()"
+                maxlength="4"
+                class="w-full border rounded px-2 py-1"
+                :class="dirty.has(item.id) ? 'border-amber-400' : ''"
+                placeholder="—"
+                @input="onYearInput($event, item)"
                 @wheel.prevent="$event.target.blur()"
               />
             </td>
@@ -112,16 +130,33 @@ const originalValues = new Map()
 watch(() => props.items, (items) => {
   items?.forEach(item => {
     if (!originalValues.has(item.id)) {
-      originalValues.set(item.id, item.mrl_value ?? null)
+      originalValues.set(item.id, {
+        mrl_value: item.mrl_value ?? null,
+        year_developed: item.year_developed ?? null,
+      })
     }
   })
 }, { immediate: true })
 
+
+
+function onYearInput(event, item) {
+  let value = event.target.value.replace(/\D/g, '').slice(0, 4);
+  event.target.value = value;
+  item.year_developed = value;
+  markDirty(item);
+}
+
 const markDirty = (item) => {
   const original = originalValues.get(item.id)
-  const current = item.mrl_value === '' ? null : item.mrl_value
 
-  if (current == original) {
+  const currentMrl = item.mrl_value === '' ? null : item.mrl_value
+  const currentYear = item.year_developed === '' ? null : item.year_developed
+
+  const mrlChanged = currentMrl != original.mrl_value
+  const yearChanged = currentYear != original.year_developed
+
+  if (!mrlChanged && !yearChanged) {
     dirty.value.delete(item.id)
   } else {
     dirty.value.add(item.id)
@@ -137,7 +172,8 @@ const saveAll = () => {
   emit('saveAll', dirtyItems.map(item => ({
     id: item.id,
     mrl_id: item.mrl_id,
-    value: item.mrl_value === '' ? null : item.mrl_value  // ← converts empty string to null
+    value: item.mrl_value === '' ? null : item.mrl_value,
+    year_developed: item.year_developed === '' ? null : item.year_developed,
   })))
 
   dirty.value = new Set()

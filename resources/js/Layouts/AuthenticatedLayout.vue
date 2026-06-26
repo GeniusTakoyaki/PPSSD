@@ -6,6 +6,10 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3'
+
+
+const isAdmin = usePage().props.auth.user?.is_admin
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -75,6 +79,12 @@ const showingNavigationDropdown = ref(false);
                                             :href="route('profile.edit')"
                                         >
                                             Profile
+                                        </DropdownLink>
+                                        <DropdownLink
+                                            v-if="isAdmin"
+                                            :href="route('register')"
+                                        >
+                                            Create Account
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
